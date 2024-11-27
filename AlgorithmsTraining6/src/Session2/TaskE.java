@@ -1,0 +1,100 @@
+package Session2;
+
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Scanner;
+import java.util.stream.Collectors;
+
+public class TaskE {
+    public static void main(String[] args) throws IOException {
+        System.out.println(findAnswer(readInput("input.txt")));
+    }
+
+    public static Input readInput(String input) throws IOException {
+        BufferedReader reader = null;
+        Scanner scanner = null;
+        if (input.length() > 0) {
+            if (input.startsWith("input")) {
+                reader = new BufferedReader(new FileReader(input));
+            } else {
+                System.setIn(new ByteArrayInputStream(input.getBytes()));
+                scanner = new Scanner(System.in);
+            }
+
+        } else {
+            scanner = new Scanner(System.in);
+        }
+        int n = 0;
+
+        int[] array = null;
+
+        if (reader != null) {
+            String s1 = reader.readLine().trim();
+            n = Integer.parseInt(s1);
+
+            array = new int[n];
+            String[] s2 = reader.readLine().split(" ");
+            for (int i = 0; i < n; i++) {
+                array[i] = Integer.parseInt(s2[i]);
+            }
+        } else if (scanner != null) {
+            n = scanner.nextInt();
+
+            array = new int[n];
+            for (int i = 0; i < n; i++) {
+                array[i] = scanner.nextInt();
+            }
+            scanner.close();
+        }
+
+        return new Input(n, array);
+    }
+
+    public static class Input {
+        private int n;
+
+        private int[] array;
+
+        public Input(int n, int[] array) {
+            if (array.length != n) {
+                throw new IllegalArgumentException("array.length != n");
+            }
+            this.n = n;
+
+            this.array = array;
+        }
+    }
+
+    public static String findAnswer(Input input) {
+        StringBuilder answer = new StringBuilder();
+        int n = input.n;
+        int[] array = input.array;
+
+        Arrays.sort(array);
+
+        List<Integer> list = Arrays.stream(array).boxed().collect(Collectors.toList());
+
+        while (list.size() > 0) {
+            int medianIndex = getMedianIndex(list);
+            answer.append(list.get(medianIndex));
+            answer.append(" ");
+
+            list.remove(medianIndex);
+        }
+
+        return answer.toString().trim();
+    }
+
+    private static int getMedianIndex(List<Integer> list) {
+
+        if (list.size() % 2 == 0) {
+            return (list.size() - 1) / 2;
+        } else {
+            return (list.size() - 1) / 2;
+        }
+    }
+}
